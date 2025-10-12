@@ -4,17 +4,27 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build-server": "tsc -p ./srcServer/tsconfig.json",
+    "start-server": "node --env-file .env ./distServer/server.js",
+    "restart-server": "clear && npm run build-server && npm run start-server",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build-frontend": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.908.0",
+    "@aws-sdk/lib-dynamodb": "^3.908.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.6.0",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",

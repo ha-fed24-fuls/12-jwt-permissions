@@ -1,0 +1,30 @@
+button {
+	padding: 0.3em 0.7em;
+	border-radius: 0.5em;
+	border: 2px solid var(--color-primary-dark);
+	background-color: var(--color-primary-dark);
+	color: var(--color-text-light);
+
+	transition: var(--transition-fast);
+
+	&.ghost {
+		background-color: var(--color-primary-light);
+		color: var(--color-text);
+	}
+
+	&:hover {
+		cursor: pointer;
+		border-color: var(--color-primary-dark-2);;
+		background-color: var(--color-primary-dark-2);
+		color: var(--color-text-light);
+	}
+}
+
+input {
+	padding: 0.2em 0.4em;
+
+
+	&::placeholder {
+		color: hotpink;
+	}
+}

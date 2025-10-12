@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Byggda backend-filer
+distServer
+
+# Hemligheter ska aldrig läggas till på GitHub
+.env
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
