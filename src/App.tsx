@@ -18,12 +18,9 @@ const App = () => {
 			</div>
 
 			<div className="box">
-			<ul className="list">
-				<li> ett </li>
-				<li> ett </li>
-				<li> ett </li>
-				<li> ett </li>
-			</ul>
+				<p> Användare </p>
+				<ul className="list">
+				</ul>
 			</div>
 
 		</main>
