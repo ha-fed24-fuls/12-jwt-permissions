@@ -2,6 +2,7 @@ import express from 'express'
 import type { Express, Request, Response } from 'express'
 import { logger } from './middleware.js'
 import registerRouter from './routes/register.js'
+import userRouter from './routes/users.js'
 
 // Konfiguration
 const app: Express = express()
@@ -16,11 +17,11 @@ app.use('/', logger)
 
 // Router-moduler
 // TODO: /api/users --> app.use('/api/users', userRouter)
+app.use('/api/users', userRouter)
 
-
-// Endpoints
 // POST /api/register
 app.use('/api/register', registerRouter)
+
 // POST /api/login
 
 

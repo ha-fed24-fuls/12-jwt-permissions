@@ -1,7 +1,7 @@
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import express from 'express'
 import type { Router, Request, Response } from 'express'
-import { db } from '../data/dynamoDb.js';
+import { db, tableName } from '../data/dynamoDb.js';
 import { createToken } from '../data/auth.js';
 
 const router: Router = express.Router();
@@ -26,7 +26,7 @@ router.post('/', async (req: Request<{}, RegisterResponse, RegisterBody>, res: R
 	console.log('body', body)
 
 	const newId = crypto.randomUUID()
-	const tableName = 'jwt'
+
 	const command = new PutCommand({
 		TableName: tableName,
 		Item: {

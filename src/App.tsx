@@ -1,14 +1,18 @@
 import { useState } from 'react';
 import './styles/App.css'
 import './styles/button.css'
+import type { UserResponse } from './types.js';
 
 interface FormData {
 	username: string;
 	password: string;
 }
+// TODO: dela upp App i flera komponenter
+
 
 const App = () => {
 	const [formData, setFormData] = useState<FormData>({ username: '', password: '' })
+	const [users, setUsers] = useState<UserResponse[]>([])
 
 	const handleClick = async () => {
 		fetch('/api/ping')
@@ -24,6 +28,18 @@ const App = () => {
 		})
 	}
 
+	const handleGetUsers = async () => {
+		// Obs! Response i frontend är inte samma sak som Response i Express!
+		const response: Response = await fetch('/api/users')
+		const data = await response.json()
+
+		// TODO: validera datan
+
+		console.log('Data from serveR:', data)
+		const userResponse: UserResponse[] = data
+		setUsers(userResponse)
+	}
+
 
 	return (
 		<>
@@ -34,6 +50,16 @@ const App = () => {
 				<p> Testa request </p>
 				<button onClick={handleClick}> Skicka HTTP request till server </button>
 
+			</div>
+
+			<div className="box">
+				<p> Användare </p>
+				<button onClick={handleGetUsers}> Visa alla användare </button>
+				<ul className="list">
+					{users.map(u => (
+						<li key={u.userId}> {u.username} </li>
+					))}
+				</ul>
 			</div>
 
 			<div className="box column">
@@ -53,12 +79,6 @@ const App = () => {
 				{/* TODO: frontend-validering av input-fälten */}
 				{/* TODO: gör så man inte kan klicka knappen om allt inte är ifyllt */}
 				<button onClick={handleSubmitRegister}> Registrera </button>
-			</div>
-
-			<div className="box">
-				<p> Användare </p>
-				<ul className="list">
-				</ul>
 			</div>
 
 		</main>
