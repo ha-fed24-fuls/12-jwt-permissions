@@ -39,6 +39,21 @@ const App = () => {
 		const userResponse: UserResponse[] = data
 		setUsers(userResponse)
 	}
+	const handleDeleteUser = async (userId: string): Promise<void> => {
+		const response: Response = await fetch('/api/users/' + userId, {
+			method: 'DELETE'
+		})
+
+		// kontrollera status för responsen. Lyckades requestet?
+		if( response.status === 204 ) {
+			console.log('DELETE lyckades!')
+			handleGetUsers() // uppdatera listan
+			// En alternativ metod: ta bort användaren direkt ur state-variabeln
+
+		} else {
+			console.log('DELETE failade med status ' + response.status)
+		}
+	}
 
 
 	return (
@@ -57,7 +72,10 @@ const App = () => {
 				<button onClick={handleGetUsers}> Visa alla användare </button>
 				<ul className="list">
 					{users.map(u => (
-						<li key={u.userId}> {u.username} </li>
+						<li key={u.userId} className="row">
+							<div className="grow"> {u.username} </div>
+							<button onClick={() => handleDeleteUser(u.userId)}> Ta bort </button>
+						</li>
 					))}
 				</ul>
 			</div>

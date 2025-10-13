@@ -1,7 +1,7 @@
 import express from 'express'
 import type { Router, Request, Response } from 'express'
 import { db, tableName } from '../data/dynamoDb.js';
-import { QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { DeleteCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 
 const router: Router = express.Router();
 
@@ -23,6 +23,9 @@ interface UserItem {
 }
 interface UserResponse {
 	username: string;
+	userId: string;
+}
+interface UserIdParam {
 	userId: string;
 }
 
@@ -53,14 +56,30 @@ router.get('/', async (req, res: Response<void | UserResponse[]>) => {
 	// USER#id - hur får vi tag i id-delen av strängen? Substring, .split m.m.
 })
 
-/*
-const result = await db.send(new QueryCommand({
-		TableName: myTable,
-		KeyConditionExpression: 'movieId = :movieId',  // PK i databasen heter "movieId" - vanligtvis heter den "pk" i stället
-		ExpressionAttributeValues: {
-			':movieId': movieId
-		}
-	}))
-*/
+router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>) => {
+	const userId: string = req.params.userId
 
+	// TODO: kontrollera om man är inloggad och har access
+	// Steg 1: kontrollera att JWT följer med i headern
+	// Steg 2: verifiera JWT -> få payload (som innehåller userId)
+	//   - se till så payload innehåller accesslevel också
+	// Steg 3: kontrollera att accessLevel är tillräcklig för det man vill göra
+	// Steg 4: utför operationen eller svara med status 401
+	// Detta behöver göras av flera endpoints - skapa en funktion
+
+	const command = new DeleteCommand({
+		TableName: tableName,
+		Key: {
+			pk: 'USER',
+			sk: 'USER#' + userId
+		},
+		ReturnValues: "ALL_OLD"
+	})
+	const output = await db.send(command)
+	if( output.Attributes ) {
+		res.sendStatus(204)  // lyckades ta bort
+	} else {
+		res.sendStatus(404)
+	}
+})
 export default router
