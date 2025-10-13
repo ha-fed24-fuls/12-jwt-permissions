@@ -23,6 +23,7 @@ router.post('/', async (req: Request<{}, RegisterResponse, RegisterBody>, res: R
 
 	// TODO: använd Zod för att kontrollera att body faktiskt är det vi förväntar oss
 	const body: RegisterBody = req.body
+	console.log('body', body)
 
 	const newId = crypto.randomUUID()
 	const tableName = 'jwt'
