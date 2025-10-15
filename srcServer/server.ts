@@ -32,6 +32,10 @@ app.get('/api/ping', (req: Request, res: Response) => {
 })
 
 
-app.listen(port, () => {
-	console.log(`Server is listening on port ${port}...`)
+app.listen(port, (error) => {
+	if( error ) {
+		console.log('Server could not start! ', error.message)
+	} else {
+		console.log(`Server is listening on port ${port}...`)
+	}
 })

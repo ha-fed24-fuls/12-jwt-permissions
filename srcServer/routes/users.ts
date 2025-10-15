@@ -2,6 +2,7 @@ import express from 'express'
 import type { Router, Request, Response } from 'express'
 import { db, tableName } from '../data/dynamoDb.js';
 import { DeleteCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import jwt from 'jsonwebtoken';
 
 const router: Router = express.Router();
 
@@ -56,9 +57,32 @@ router.get('/', async (req, res: Response<void | UserResponse[]>) => {
 	// USER#id - hur får vi tag i id-delen av strängen? Substring, .split m.m.
 })
 
-router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>) => {
-	const userId: string = req.params.userId
+interface Payload  {
+	userId: string;
+	accessLevel: string;
+}
+function validateJwt(authHeader: string | undefined): Payload | null {
+	// 'Bearer: token'
+	if( !authHeader ) {
+		return null
+	}
+	const token: string = authHeader.substring(8)  // alternativ: slice, split
+	try {
+		const decodedPayload: Payload = jwt.verify(token, process.env.JWT_SECRET || '') as Payload
+		// TODO: validera decodedPayload
+		const payload: Payload = { userId: decodedPayload.userId, accessLevel: decodedPayload.accessLevel }
+		return payload
 
+	} catch(error) {
+		console.log('JWT verify failed: ', (error as any)?.message)
+		return null
+	}
+}
+
+
+router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>) => {
+	const userIdToDelete: string = req.params.userId
+	
 	// TODO: kontrollera om man är inloggad och har access
 	// Steg 1: kontrollera att JWT följer med i headern
 	// Steg 2: verifiera JWT -> få payload (som innehåller userId)
@@ -67,11 +91,26 @@ router.delete('/:userId', async (req: Request<UserIdParam>, res: Response<void>)
 	// Steg 4: utför operationen eller svara med status 401
 	// Detta behöver göras av flera endpoints - skapa en funktion
 
+	const maybePayload: Payload | null = validateJwt(req.headers['authorization'])
+	if( !maybePayload ) {
+		console.log('Gick inte att validera JWT')
+		res.sendStatus(401)
+		return
+	}
+
+	const { userId, accessLevel } = maybePayload
+	// Man får lov att ta bort en användare om man tar bort sig själv eller har accessLevel admin
+	if( userId !== userIdToDelete && accessLevel !== 'admin' ) {
+		console.log('Inte tillräcklig access level. ', userId, accessLevel)
+		res.sendStatus(401)
+		return
+	}
+
 	const command = new DeleteCommand({
 		TableName: tableName,
 		Key: {
 			pk: 'USER',
-			sk: 'USER#' + userId
+			sk: 'USER#' + userIdToDelete
 		},
 		ReturnValues: "ALL_OLD"
 	})

@@ -63,6 +63,7 @@ const App = () => {
 	const handleDeleteUser = async (userId: string): Promise<void> => {
 		const response: Response = await fetch('/api/users/' + userId, {
 			method: 'DELETE'
+			// TODO: lägg till JWT här!
 		})
 
 		// kontrollera status för responsen. Lyckades requestet?
