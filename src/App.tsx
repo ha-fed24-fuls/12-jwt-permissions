@@ -9,6 +9,8 @@ interface FormData {
 }
 // TODO: dela upp App i flera komponenter
 
+const LS_KEY = 'jwt'
+
 
 const App = () => {
 	const [formData, setFormData] = useState<FormData>({ username: '', password: '' })
@@ -19,13 +21,28 @@ const App = () => {
 	}
 
 	const handleSubmitRegister = async () => {
-		fetch('/api/register', {
+		const response = await fetch('/api/register', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(formData)
 		})
+		const data = await response.json()
+		
+		// Vi tittar i backend: filen srcServer/routes/register.ts
+		// Servern skickar tillbaka ett objekt: { success: boolean, token?: string }
+		// TODO: validera med Zod att data variabeln matchar objektet
+		
+		if( data.success ) {
+			const jwt: string = data.token
+			localStorage.setItem(LS_KEY, jwt)
+			// spara, använd i framtida request
+			// uppdatera listan med användare:
+			// Alt. 1: skicka nytt request till servern (som om man klickar på knappen "Visa alla användare")
+			// Alt. 2: uppdatera state-variabeln direkt <- går inte, eftersom vi inte har userId
+			handleGetUsers()  // alt. 1
+		}
 	}
 
 	const handleGetUsers = async () => {
