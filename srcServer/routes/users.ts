@@ -3,6 +3,7 @@ import type { Router, Request, Response } from 'express'
 import { db, tableName } from '../data/dynamoDb.js';
 import { DeleteCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import jwt from 'jsonwebtoken';
+import type { UserItem } from '../data/types.js';
 
 const router: Router = express.Router();
 
@@ -14,14 +15,7 @@ PUT /:id
 DELETE /:id
 */
 
-// Beskriver user-items från databasen
-interface UserItem {
-	pk: string;
-	sk: string;
-	username: string;
-	password: string;
-	accessLevel: string;
-}
+
 interface UserResponse {
 	username: string;
 	userId: string;

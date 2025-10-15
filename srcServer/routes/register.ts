@@ -3,26 +3,19 @@ import express from 'express'
 import type { Router, Request, Response } from 'express'
 import { db, tableName } from '../data/dynamoDb.js';
 import { createToken } from '../data/auth.js';
+import type { JwtResponse, UserBody } from '../data/types.js';
 
 const router: Router = express.Router();
 
-interface RegisterBody {
-	username: string;
-	password: string;
-}
-interface RegisterResponse {
-	success: boolean;
-	token?: string;  // JWT
-}
 
-router.post('/', async (req: Request<{}, RegisterResponse, RegisterBody>, res: Response<RegisterResponse>) => {
+router.post('/', async (req: Request<{}, JwtResponse, UserBody>, res: Response<JwtResponse>) => {
 	// validera body
 	// skapa ny användare mha RegisterBody -> PutCommand
 	// skapa JWT med användarens id (hur får vi ett id?)
 	// skicka tillbaka JWT och success=true
 
 	// TODO: använd Zod för att kontrollera att body faktiskt är det vi förväntar oss
-	const body: RegisterBody = req.body
+	const body: UserBody = req.body
 	console.log('body', body)
 
 	const newId = crypto.randomUUID()
