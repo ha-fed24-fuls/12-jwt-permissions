@@ -49,6 +49,37 @@ const App = () => {
 		}
 	}
 
+	const handleSubmitLogin = async () => {
+		// TODO: gör login-knappen disabled tills denna funktion är färdig
+		const response = await fetch('/api/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(formData)
+		})
+		if( response.status !== 200 ) {
+			// Något gick fel - login misslyckades
+			// TODO: visa meddelande för användaren?
+			return
+		}
+
+		// Servern skickar tillbaka ett objekt: { success: boolean, token?: string }
+		// TODO: validera med Zod att data variabeln matchar objektet
+		const data = await response.json()
+	
+		if( data.success ) {
+			const jwt: string = data.token
+			localStorage.setItem(LS_KEY, jwt)
+			// TODO: visa för användaren att man är inloggad
+			console.log('Inloggningen lyckades')
+			
+		} else {
+			localStorage.removeItem(LS_KEY)
+			// Visa meddelande för användaren?
+		}
+	}
+
 	const handleGetUsers = async () => {
 		// Obs! Response i frontend är inte samma sak som Response i Express!
 		const response: Response = await fetch('/api/users')
@@ -127,6 +158,7 @@ const App = () => {
 
 				{/* TODO: frontend-validering av input-fälten */}
 				{/* TODO: gör så man inte kan klicka knappen om allt inte är ifyllt */}
+				<button onClick={handleSubmitLogin}> Logga in </button>
 				<button onClick={handleSubmitRegister}> Registrera </button>
 			</div>
 

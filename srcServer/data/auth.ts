@@ -12,6 +12,7 @@ function createToken(userId: string): string {
 	const defaultExpiration: number = now + 15 * 60
 	return jwt.sign({
 		userId: userId,
+		// TODO: lägg till accessLevel för att göra det möjligt för admin att ta bort alla
 		exp: defaultExpiration
 	}, jwtSecret)
 }

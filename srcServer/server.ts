@@ -3,6 +3,7 @@ import type { Express, Request, Response } from 'express'
 import { logger } from './middleware.js'
 import registerRouter from './routes/register.js'
 import userRouter from './routes/users.js'
+import loginRouter from './routes/login.js'
 
 // Konfiguration
 const app: Express = express()
@@ -23,6 +24,7 @@ app.use('/api/users', userRouter)
 app.use('/api/register', registerRouter)
 
 // POST /api/login
+app.use('/api/login', loginRouter)
 
 
 

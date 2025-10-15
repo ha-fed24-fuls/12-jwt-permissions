@@ -9,7 +9,7 @@ const router: Router = express.Router();
 
 
 
-router.post('/api/login', async (req: Request<{}, JwtResponse | void, UserBody>, res: Response<JwtResponse | void>) => {
+router.post('/', async (req: Request<{}, JwtResponse | void, UserBody>, res: Response<JwtResponse | void>) => {
 	// validera body
 	// finns användaren i databasen? QueryCommand
 	// matchar lösenordet?
@@ -49,3 +49,4 @@ router.post('/api/login', async (req: Request<{}, JwtResponse | void, UserBody>,
 	res.send({ success: true, token: token })
 })
 
+export default router
